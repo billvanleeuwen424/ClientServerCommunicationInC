@@ -1,3 +1,5 @@
+
+
 #include <stdio.h>
 #include <unistd.h>
 
@@ -7,10 +9,12 @@
 
 
 int main(){
+
     if(access(CLIENTFIFO, W_OK) == 0){
-        printf("yes client\n");
-    };
+        printf("Client to server fifo does not exist, or the permission have been configured incorrectlty. Exiting.\n");
+    }
+
     if(access(SERVERFIFO, R_OK) == 0){
-        printf("yes server\n");
-    };
+         printf("Server to Client fifo does not exist, or the permission have been configured incorrectlty. Exiting.\n");
+    }
 }
