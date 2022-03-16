@@ -1,9 +1,12 @@
 #include <sys/stat.h>
 
-int main(){
-    
-    char *clientToServerFifo;
-    char *serverToClientFifo;
+#define CLIENTFIFO "clientfifo"
+#define SERVERFIFO  "serverfifo"
 
-    mkfifo(const char *pathname, mode_t mode);
+int main(){
+
+
+    //777 permissions temporarily
+    mkfifo(CLIENTFIFO, 0777);
+    mkfifo(SERVERFIFO, 0777);
 }
