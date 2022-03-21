@@ -3,6 +3,8 @@
 #include <unistd.h>
 #include <errno.h>
 
+#include <fcntl.h>
+
 #define CLIENTFIFO "clientfifo"
 #define SERVERFIFO  "serverfifo"
 
@@ -36,13 +38,13 @@ int main(){
     errno = 0;
 
     /*open write only*/
-    serverFileDescriptor = open(SERVERFIFO, 1);
+    serverFileDescriptor = open(SERVERFIFO, O_WRONLY | O_NONBLOCK);
     if(serverFileDescriptor == -1){
         fprintf(stderr, "Error opening Server Fifo. %s", strerror(errno));
     }
 
     /*open read only*/
-    clientFileDescriptor = open(CLIENTFIFO, 0);
+    clientFileDescriptor = open(CLIENTFIFO, O_RDONLY);
     if(clientFileDescriptor == -1){
         fprintf(stderr, "Error opening Client Fifo. %s", strerror(errno));
     }
