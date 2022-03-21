@@ -49,7 +49,8 @@ int main(){
 
 
     
-    
 
-    
+    /*close the fifos*/
+    close(SERVERFIFO);
+    close(CLIENTFIFO);
 }
