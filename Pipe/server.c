@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <errno.h>
-
+#include <string.h>
 #include <fcntl.h>
+#include <stdlib.h>
+
+#include <sys/types.h>
 
 #define CLIENTFIFO "clientfifo"
 #define SERVERFIFO  "serverfifo"
@@ -17,18 +20,18 @@ int main(){
 
     /*check if can read from client, and write to server fifo*/
     if(access(CLIENTFIFO, R_OK) != 0){
-        printf("Client to server fifo does not exist, or the permission have been configured incorrectlty. Exiting.\n");
+        printf("Client to server fifo does not exist, or the permission have been configured incorrectlty.\n");
 
             
-        if(mkfifo(CLIENTFIFO, S_IRUSR | S_IWUSR | S_IWGRP) == -1){  //pg 913 Linux Programming Interface
+        if(mkfifo(CLIENTFIFO,0777) == -1){  //pg 913 Linux Programming Interface
             fprintf(stderr, "Error building client-to-server fifo. %s, Exiting.\n", strerror(errno));
             exit(-1);
         }
     }
     if(access(SERVERFIFO, W_OK) != 0){
-        printf("Server to Client fifo does not exist, or the permission have been configured incorrectlty. Exiting.\n");
+        printf("Server to Client fifo does not exist, or the permission have been configured incorrectlty.\n");
 
-        if(mkfifo(SERVERFIFO, S_IRUSR | S_IWUSR | S_IWGRP) == -1){
+        if(mkfifo(SERVERFIFO,0777) == -1){
             fprintf(stderr, "Error building server-to-client fifo. %s, Exiting.\n", strerror(errno));
             exit(-1);
         }
@@ -38,21 +41,23 @@ int main(){
     errno = 0;
 
     /*open write only*/
-    serverFileDescriptor = open(SERVERFIFO, O_WRONLY | O_NONBLOCK);
+    serverFileDescriptor = open(SERVERFIFO, O_WRONLY);
     if(serverFileDescriptor == -1){
-        fprintf(stderr, "Error opening Server Fifo. %s", strerror(errno));
+        fprintf(stderr, "Error opening Server Fifo. %s\n", strerror(errno));
+        exit(-1);
     }
 
     /*open read only*/
     clientFileDescriptor = open(CLIENTFIFO, O_RDONLY);
     if(clientFileDescriptor == -1){
-        fprintf(stderr, "Error opening Client Fifo. %s", strerror(errno));
+        fprintf(stderr, "Error opening Client Fifo. %s\n", strerror(errno));
+        exit(-1);
     }
 
-
+    write(serverFileDescriptor,"yo\n",4);
     
 
     /*close the fifos*/
-    close(SERVERFIFO);
-    close(CLIENTFIFO);
+    close(serverFileDescriptor);
+    close(clientFileDescriptor);
 }
