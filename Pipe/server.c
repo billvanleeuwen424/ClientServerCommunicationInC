@@ -23,7 +23,7 @@ int main(){
         printf("Client to server fifo does not exist, or the permission have been configured incorrectlty.\n");
 
             
-        if(mkfifo(CLIENTFIFO,0777) == -1){  //pg 913 Linux Programming Interface
+        if(mkfifo(CLIENTFIFO,S_IRUSR | S_IWUSR | S_IWGRP) == -1){  //pg 913 Linux Programming Interface for permissions
             fprintf(stderr, "Error building client-to-server fifo. %s, Exiting.\n", strerror(errno));
             exit(-1);
         }
@@ -31,7 +31,7 @@ int main(){
     if(access(SERVERFIFO, W_OK) != 0){
         printf("Server to Client fifo does not exist, or the permission have been configured incorrectlty.\n");
 
-        if(mkfifo(SERVERFIFO,0777) == -1){
+        if(mkfifo(SERVERFIFO,S_IRUSR | S_IWUSR | S_IWGRP) == -1){
             fprintf(stderr, "Error building server-to-client fifo. %s, Exiting.\n", strerror(errno));
             exit(-1);
         }
