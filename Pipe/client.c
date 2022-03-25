@@ -33,22 +33,25 @@ int main(){
     /*open read only*/
     serverFileDescriptor = open(SERVERFIFO, O_RDONLY);
     if(serverFileDescriptor == -1){
-        fprintf(stderr, "Error opening Server Fifo. %s", strerror(errno));
+        fprintf(stderr, "Error opening Server Fifo. %s\n", strerror(errno));
         exit(-1);
     }
 
     /*open write only*/
     clientFileDescriptor = open(CLIENTFIFO, O_WRONLY | O_NONBLOCK);
     if(clientFileDescriptor == -1){
-        fprintf(stderr, "Error opening Client Fifo. %s", strerror(errno));
+        fprintf(stderr, "Error opening Client Fifo. %s\n", strerror(errno));
         exit(-1);
     }
 
-
+    /* DEBUG for server to client
     char test[5];
     read(serverFileDescriptor,test,4);
 
     printf("%s", test);
+    */
+
+    write(clientFileDescriptor, "sonic.exe\n", 10);
 
     /*close the fifos*/
     close(serverFileDescriptor);

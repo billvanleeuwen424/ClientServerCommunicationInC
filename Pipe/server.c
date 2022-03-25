@@ -21,6 +21,7 @@ int main(){
     /*check if can read from client, and write to server fifo*/
     if(access(CLIENTFIFO, R_OK) != 0){
         printf("Client to server fifo does not exist, or the permission have been configured incorrectlty.\n");
+        printf("Attempting to create new fifo");
 
             
         if(mkfifo(CLIENTFIFO,S_IRUSR | S_IWUSR | S_IWGRP) == -1){  //pg 913 Linux Programming Interface for permissions
@@ -30,6 +31,7 @@ int main(){
     }
     if(access(SERVERFIFO, W_OK) != 0){
         printf("Server to Client fifo does not exist, or the permission have been configured incorrectlty.\n");
+        printf("Attempting to create new fifo");
 
         if(mkfifo(SERVERFIFO,S_IRUSR | S_IWUSR | S_IWGRP) == -1){
             fprintf(stderr, "Error building server-to-client fifo. %s, Exiting.\n", strerror(errno));
@@ -56,6 +58,20 @@ int main(){
 
     write(serverFileDescriptor,"yo\n",4);
     
+
+
+
+
+
+    char filename[256];
+    read(clientFileDescriptor,filename,256);
+
+    printf("Filename: %s", filename);
+
+
+
+
+
 
     /*close the fifos*/
     close(serverFileDescriptor);
