@@ -12,7 +12,7 @@ int main(){
     errno = 0;
 
     //define socket
-    int socketfd;
+    int serverfd;
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(57505); //50000 + last 4 of student num
@@ -22,24 +22,30 @@ int main(){
     int sizeclient = sizeof(client);
 
     //create socket
-    socketfd = socket(AF_UNIX, SOCK_STREAM, 0);
-
-    //bind and listen
-    if(bind(socketfd, (struct sockaddr*) &server, sizeof(server)) < 0){
-        fprintf(stderr, "%s", strerror(errno));
+    if((serverfd = socket(AF_INET, SOCK_STREAM, 0)) < 0){
+        fprintf(stderr, "socket create errror. %s\n", strerror(errno));
         exit(-1);
     }
-    if(listen(socketfd, 1) < 0){
-        fprintf(stderr, "%s", strerror(errno));
+
+    //bind and listen
+    if(bind(serverfd, (struct sockaddr*) &server, sizeof(server)) < 0){
+        fprintf(stderr, "bind errror. %s\n", strerror(errno));
+        exit(-1);
+    }
+    if(listen(serverfd, 5) < 0){
+        fprintf(stderr, "listen error. %s\n", strerror(errno));
         exit(-1);
     }
 
     //wait for connection
-    int clientfd = accept(socketfd, (struct sockaddr*) &client, &sizeclient);
+    int clientfd = accept(serverfd, (struct sockaddr*) &client, &sizeclient);
     if(clientfd < 0){
-        fprintf(stderr, "%s", strerror(errno));
+        fprintf(stderr, "accept error. %s\n", strerror(errno));
         exit(-1);
     }
 
+    printf("Yeet\n");
 
+    close(clientfd);
+    close(serverfd);
 }
