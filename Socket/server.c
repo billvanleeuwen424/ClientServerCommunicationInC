@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
@@ -7,6 +8,8 @@
 #include <netinet/ip.h>
 
 int main(){
+
+    errno = 0;
 
     //define socket
     int socketfd;
@@ -22,12 +25,21 @@ int main(){
     socketfd = socket(AF_UNIX, SOCK_STREAM, 0);
 
     //bind and listen
-    bind(socketfd, &server, sizeof(server));
-    listen(socketfd, 1);
+    if(bind(socketfd, (struct sockaddr*) &server, sizeof(server)) < 0){
+        fprintf(stderr, "%s", strerror(errno));
+        exit(-1);
+    }
+    if(listen(socketfd, 1) < 0){
+        fprintf(stderr, "%s", strerror(errno));
+        exit(-1);
+    }
 
     //wait for connection
-    int clientfd = accept(socketfd, &client, sizeclient);
-
+    int clientfd = accept(socketfd, (struct sockaddr*) &client, &sizeclient);
+    if(clientfd < 0){
+        fprintf(stderr, "%s", strerror(errno));
+        exit(-1);
+    }
 
 
 }
