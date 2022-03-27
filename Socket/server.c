@@ -6,10 +6,15 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <netinet/ip.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+#include "../struct.c"
 
 int main(){
 
     errno = 0;
+
 
     //define socket
     int serverfd;
@@ -44,7 +49,14 @@ int main(){
         exit(-1);
     }
 
-    printf("Yeet\n");
+    sleep(5);
+    //printf("Yeet\n");
+
+    char new[1024];
+
+    read(clientfd, new, 1024);
+
+    printf("%s", new);
 
     close(clientfd);
     close(serverfd);

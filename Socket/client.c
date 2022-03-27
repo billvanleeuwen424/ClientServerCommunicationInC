@@ -7,6 +7,11 @@
 #include <sys/types.h>
 #include <netinet/ip.h>
 #include <arpa/inet.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+
+
+#include "../struct.c"
 
 int main(){
 
@@ -23,7 +28,17 @@ int main(){
         exit(-1);
     }
 
+    
+    
 
+    struct packet packet;
+    int inFiled = open("../sendfile.txt", O_RDONLY);
 
+    int numRead;
+    while ((numRead = read(inFiled, packet.data, 1024)) > 0){ //pg 71 Linux Programming Interface
+        write(clientfd,packet.data, numRead);
+    }
+
+    close(inFiled);
     close(clientfd);
 }
