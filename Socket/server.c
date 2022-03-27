@@ -49,14 +49,14 @@ int main(){
         exit(-1);
     }
 
-    sleep(5);
-    //printf("Yeet\n");
 
-    char new[1024];
+    struct packet packet;
+    struct packet *packetP = &packet;
 
-    read(clientfd, new, 1024);
+    read(clientfd, packetP, sizeof(struct packet));
 
-    printf("%s", new);
+    printf("%s\n", packet.data);
+    printf("%d", packet.size);
 
     close(clientfd);
     close(serverfd);

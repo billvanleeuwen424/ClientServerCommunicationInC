@@ -32,11 +32,15 @@ int main(){
     
 
     struct packet packet;
+    struct packet *packetP = &packet;
+
     int inFiled = open("../sendfile.txt", O_RDONLY);
 
     int numRead;
     while ((numRead = read(inFiled, packet.data, 1024)) > 0){ //pg 71 Linux Programming Interface
-        write(clientfd,packet.data, numRead);
+        packet.size = numRead;
+        printf("%d", packet.size);
+        write(clientfd,packetP, numRead);
     }
 
     close(inFiled);
