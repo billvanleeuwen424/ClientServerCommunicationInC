@@ -53,11 +53,22 @@ int main(){
     struct packet packet;
     struct packet *packetP = &packet;
 
-    read(clientfd, packetP, sizeof(struct packet));
+    int numRead;
 
-    printf("%s\n", packet.data);
-    printf("%d", packet.size);
+    /*pg 71 Linux Programming Interface.*/
+    int openFlags = O_CREAT | O_WRONLY | O_TRUNC; /*Flags = create file if doesnt exist, write only, destroy data in file if already exists*/
+    mode_t filePerms = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH; /* rw-rw-rw- */
+
+    int outFiled = open("recfile.txt", openFlags, filePerms);
+
+    do
+    {
+        read(clientfd, packetP, sizeof(struct packet));
+        write(outFiled, packet.data, packet.size);
+    } while (packet.size == 1024);
+    
 
     close(clientfd);
     close(serverfd);
+    close(outFiled);
 }

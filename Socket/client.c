@@ -40,7 +40,7 @@ int main(){
     while ((numRead = read(inFiled, packet.data, 1024)) > 0){ //pg 71 Linux Programming Interface
         packet.size = numRead;
         printf("%d", packet.size);
-        write(clientfd,packetP, numRead);
+        write(clientfd,packetP, sizeof(packet));
     }
 
     close(inFiled);
