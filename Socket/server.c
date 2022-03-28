@@ -1,15 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-#include <netinet/ip.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
-#include "../struct.c"
+#include "common.c"
 
 int main(){
 
@@ -49,18 +39,24 @@ int main(){
         exit(-1);
     }
 
+    /*get the filename*/
+    char filename[256];
+    if(read(clientfd, filename, 256) == 0){
+        fprintf(stderr, "filename read error. %s\n", strerror(errno));
+        exit(-1);
+    }
 
-    struct packet packet;
-    struct packet *packetP = &packet;
-
-    int numRead;
 
     /*pg 71 Linux Programming Interface.*/
     int openFlags = O_CREAT | O_WRONLY | O_TRUNC; /*Flags = create file if doesnt exist, write only, destroy data in file if already exists*/
     mode_t filePerms = S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH; /* rw-rw-rw- */
 
-    int outFiled = open("recfile.txt", openFlags, filePerms);
+    int outFiled = open(filename, openFlags, filePerms);
 
+    struct packet packet;
+    struct packet *packetP = &packet;
+
+    /*read data from socket, output to file*/
     do
     {
         read(clientfd, packetP, sizeof(struct packet));
