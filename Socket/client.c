@@ -38,27 +38,14 @@ int main(int argc, char *argv[]){
     struct packet *packetP = &packet;
 
 
-
-
     /*split the filename off of any potential path passed
-    store the filename in the packet
     write it to the server*/
     argv[1] = basename(argv[1]);
 
     strcat(argv[1],"\n");
-    /*
-    strcpy(packet.data, argv[1]);
 
-    packet.size = strlen(argv[1]);
-
-    write(clientfd, packetP, sizeof(packet));
-    */
 
    write(clientfd, argv[1], strlen(argv[1]));
-    
-    
-    /*wait for server to read filename before sending more data*/
-    //read(clientfd, (void*)0, 1);
 
 
     /*read the file, write to the socket*/
