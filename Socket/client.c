@@ -1,7 +1,10 @@
 
 #include "common.c"
+#include <libgen.h>
 
 int main(int argc, char *argv[]){
+
+
 
     /*exit if incorrect params*/
     if(argc != 2){
@@ -24,7 +27,6 @@ int main(int argc, char *argv[]){
     server.sin_addr.s_addr = inet_addr("192.168.0.190");
 
 
-
     /*create socket, connect*/
     int clientfd = socket(AF_INET, SOCK_STREAM, 0);
     if(connect(clientfd, (struct sockaddr*) &server, sizeof(server)) < 0){
@@ -32,15 +34,32 @@ int main(int argc, char *argv[]){
         exit(-1);
     }
 
-
-    /*write the name to the server*/
-    write(clientfd, argv[1], strlen(argv[1]));
-    
-
-
-
     struct packet packet;
     struct packet *packetP = &packet;
+
+
+
+
+    /*split the filename off of any potential path passed
+    store the filename in the packet
+    write it to the server*/
+    argv[1] = basename(argv[1]);
+
+    strcat(argv[1],"\n");
+    /*
+    strcpy(packet.data, argv[1]);
+
+    packet.size = strlen(argv[1]);
+
+    write(clientfd, packetP, sizeof(packet));
+    */
+
+   write(clientfd, argv[1], strlen(argv[1]));
+    
+    
+    /*wait for server to read filename before sending more data*/
+    //read(clientfd, (void*)0, 1);
+
 
     /*read the file, write to the socket*/
     int numRead;
