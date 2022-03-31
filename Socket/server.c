@@ -35,6 +35,7 @@ int main(){
         
         if(listen(serverfd, 5) < 0){
             fprintf(stderr, "listen error. %s\n", strerror(errno));
+            close(serverfd);
             exit(-1);
         }
 
@@ -42,40 +43,56 @@ int main(){
         int clientfd = accept(serverfd, (struct sockaddr*) &client, &sizeclient);
         if(clientfd < 0){
             fprintf(stderr, "accept error. %s\n", strerror(errno));
+            close(clientfd);
+            close(serverfd);
             exit(-1);
         }
-
-
-        struct packet packet;
-        struct packet *packetP = &packet;
 
 
         char filename[256];
         char *pfilename;
-
         read(clientfd, filename, 256);
-
+        /*cut all the crap off the end of the filename*/
         pfilename = strtok(filename, "\n");
         
-        /*error with file open. close connection*/
         int outFiled;
+        errno = 0;
 
+        /*error with file open. close connection*/
         if((outFiled = open(pfilename, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0){
+            fprintf(stderr, "open file error. %s\n", strerror(errno));
+            close(outFiled);
             close(clientfd);
+            close(serverfd);
             exit(-1);
         }
 
+        struct packet packet;
+        struct packet *packetP = &packet;
 
         /*read data from socket, output to file*/
         do{
-            read(clientfd, packetP, sizeof(struct packet));
-            write(outFiled, packet.data, packet.size);
+            errno = 0;
+            if(read(clientfd, packetP, sizeof(struct packet)) < 0){
+                fprintf(stderr, "read socket error. %s\n", strerror(errno));
+                close(outFiled);
+                close(clientfd);
+                close(serverfd);
+                exit(-1);
+            }
+            if(write(outFiled, packet.data, packet.size) < 0){
+                fprintf(stderr, "write to file error. %s\n", strerror(errno));
+                close(outFiled);
+                close(clientfd);
+                close(serverfd);
+                exit(-1);
+            }
         } while (packet.size == 1024);
         close(outFiled);
         close(clientfd);
     }
-
     close(serverfd);
+
 
     exit(1);
 }
