@@ -1,3 +1,17 @@
+/*
+Name: Lab4 (server)
+Authour: William Van Leeuwen - 0697505
+Purpose: a simple file transfer program using sockets
+
+How to use:
+    step 1: ./server
+    step 2: now that the server is running:
+            ./client [file you wish to transfer to the server directory]
+
+Params: none.
+
+Required: See include statements below. Most are in the common.c file
+*/
 
 #include "common.c"
 #include <signal.h>

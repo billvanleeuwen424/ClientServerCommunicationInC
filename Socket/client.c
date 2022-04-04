@@ -1,3 +1,17 @@
+/*
+Name: Lab4 (client)
+Authour: William Van Leeuwen - 0697505
+Purpose: a simple file transfer program using sockets
+
+How to use:
+    step 1: ./server
+    step 2: now that the server is running:
+            ./client [file you wish to transfer to the server directory]
+
+Params: none.
+
+Required: See include statements below. Most are in the common.c file
+*/
 
 #include "common.c"
 #include <libgen.h>
@@ -24,7 +38,7 @@ int main(int argc, char *argv[]){
     struct sockaddr_in server;
     server.sin_family = AF_INET;
     server.sin_port = htons(57505); //50000 + last 4 of student num
-    server.sin_addr.s_addr = inet_addr("192.168.0.190");
+    server.sin_addr.s_addr = htonl(INADDR_ANY);
 
 
     /*create socket, connect*/
