@@ -55,6 +55,11 @@ int main(int argc, char *argv[]){
         write(clientfd,packetP, sizeof(packet));
     }
 
+    /*wait for ok message*/
+    read(clientfd, (void*)0, 1);
+
     close(inFiled);
     close(clientfd);
+
+    exit(1);
 }

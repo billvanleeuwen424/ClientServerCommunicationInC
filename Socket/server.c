@@ -3,9 +3,7 @@
 #include <signal.h>
 int main(){
 
-
     errno = 0;
-
 
     /*define socket*/
     int serverfd;
@@ -22,7 +20,6 @@ int main(){
         fprintf(stderr, "socket create errror. %s\n", strerror(errno));
         exit(-1);
     }
-
     /*bind*/
     if(bind(serverfd, (struct sockaddr*) &server, sizeof(server)) < 0){
         fprintf(stderr, "bind errror. %s\n", strerror(errno));
@@ -31,17 +28,25 @@ int main(){
 
 
 
+    char filename[256];
+    char *pfilename;
+    int outFiled;
+    int clientfd;
 
+    struct packet packet;
+    struct packet *packetP = &packet;
+
+
+    //loop forever
     while(1){
         
-        if(listen(serverfd, 5) < 0){
+        /*wait for connection*/
+        if(listen(serverfd, 1) < 0){
             fprintf(stderr, "listen error. %s\n", strerror(errno));
             close(serverfd);
             exit(-1);
         }
-
-        /*wait for connection*/
-        int clientfd = accept(serverfd, (struct sockaddr*) &client, &sizeclient);
+        clientfd = accept(serverfd, (struct sockaddr*) &client, &sizeclient);
         if(clientfd < 0){
             fprintf(stderr, "accept error. %s\n", strerror(errno));
             close(clientfd);
@@ -50,13 +55,11 @@ int main(){
         }
 
 
-        char filename[256];
-        char *pfilename;
+        /* Read the filename,
+        cut all the crap off the end of the filename (the un needed bytes)*/
         read(clientfd, filename, 256);
-        /*cut all the crap off the end of the filename*/
         pfilename = strtok(filename, "\n");
         
-        int outFiled;
         errno = 0;
 
         /*error with file open. close connection*/
@@ -68,8 +71,7 @@ int main(){
             exit(-1);
         }
 
-        struct packet packet;
-        struct packet *packetP = &packet;
+        
 
         /*read data from socket, output to file*/
         do{
@@ -88,14 +90,18 @@ int main(){
                 close(serverfd);
                 exit(-1);
             }
-        } while (packet.size == 1024);
+        } while (packet.size == 1024);  /*read until input is < 1024*/
 
+        /*write an empty ok message*/
+        write(clientfd, (void*)0,1);
+        
+        /*close fd's*/
         close(outFiled);
         close(clientfd);
     }
 
+
+
     close(serverfd);
-
-
     exit(1);
 }
