@@ -112,6 +112,9 @@ int main(){
         /*close fd's*/
         close(outFiled);
         close(clientfd);
+
+        strcpy(packet.data, "");
+        packet.size = 0;
     }
 
 

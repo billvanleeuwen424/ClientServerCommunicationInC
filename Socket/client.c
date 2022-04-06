@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
     strcat(argv[1],"\n");
 
 
-   write(clientfd, argv[1], strlen(argv[1]));
+   write(clientfd, argv[1], strlen(argv[1])+1);
 
 
     /*read the file, write to the socket*/
