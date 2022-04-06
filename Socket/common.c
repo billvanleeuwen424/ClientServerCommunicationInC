@@ -14,3 +14,6 @@ struct packet{
     char data[1024];
     int size;
 };
+
+
+int packetSize = sizeof(struct packet);

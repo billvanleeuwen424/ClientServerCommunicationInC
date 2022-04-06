@@ -56,17 +56,17 @@ int main(int argc, char *argv[]){
     write it to the server*/
     argv[1] = basename(argv[1]);
 
-    strcat(argv[1],"\n");
+    strcpy(packet.data, argv[1]);
+    packet.size = strlen(argv[1]);
 
-
-   write(clientfd, argv[1], strlen(argv[1])+1);
+    write(clientfd, packetP, packetSize);
 
 
     /*read the file, write to the socket*/
     int numRead;
     while ((numRead = read(inFiled, packet.data, 1024)) > 0){ //pg 71 Linux Programming Interface
         packet.size = numRead;
-        write(clientfd,packetP, sizeof(packet));
+        write(clientfd,packetP, packetSize);
     }
 
     /*wait for ok message*/

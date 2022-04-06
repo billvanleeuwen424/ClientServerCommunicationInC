@@ -69,15 +69,14 @@ int main(){
         }
 
 
-        /* Read the filename,
-        cut all the crap off the end of the filename (the un needed bytes)*/
-        read(clientfd, filename, 256);
-        pfilename = strtok(filename, "\n");
+        /* Read the filename*/
+        read(clientfd, packetP, packetSize);
+        strcpy(filename,packet.data);
         
         errno = 0;
 
         /*error with file open. close connection*/
-        if((outFiled = open(pfilename, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0){
+        if((outFiled = open(filename, O_CREAT | O_WRONLY | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH | S_IWOTH)) < 0){
             fprintf(stderr, "open file error. %s\n", strerror(errno));
             close(outFiled);
             close(clientfd);
@@ -85,12 +84,11 @@ int main(){
             exit(-1);
         }
 
-        
 
         /*read data from socket, output to file*/
         do{
             errno = 0;
-            if(read(clientfd, packetP, sizeof(struct packet)) < 0){
+            if(read(clientfd, packetP, packetSize) < 0){
                 fprintf(stderr, "read socket error. %s\n", strerror(errno));
                 close(outFiled);
                 close(clientfd);
@@ -105,6 +103,9 @@ int main(){
                 exit(-1);
             }
         } while (packet.size == 1024);  /*read until input is < 1024*/
+
+
+        printf("%s has been transfered successfully.\n", filename);
 
         /*write an empty ok message*/
         write(clientfd, (void*)0,1);
