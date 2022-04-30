@@ -13,7 +13,7 @@ Params: none.
 Required: See include statements below. Most are in the common.c file
 */
 
-#include "common.c"
+#include "common.h"
 #include <signal.h>
 int main(){
 
