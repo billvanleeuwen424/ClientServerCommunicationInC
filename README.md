@@ -24,6 +24,12 @@ This repository contains 2 C files, a client and a server. The client will trans
     ./client /home/user/Documents/someFile
     ```
 
+
+## Demo    
+![alt text](https://github.com/billvanleeuwen424/ClientServerCommunication/blob/image/1.png)
+![alt text](https://github.com/billvanleeuwen424/ClientServerCommunication/blob/image/2.png)
+
+
 ## What I learned
 - C Programming
 - Systems Programming on UNIX with C
